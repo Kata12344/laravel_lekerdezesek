@@ -7,6 +7,7 @@ use App\Models\Lending;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LendingController extends Controller
 {
@@ -66,4 +67,19 @@ class LendingController extends Controller
         $copies = Copy::all();
         return view('lending.new', ['users' => $users, 'copies' => $copies]);
     }
+
+    //Bejelentkezett felhasználó azon kölcsönzéseit add meg (copy_id és db), ahol egy példányt legalább db-szor (paraméteres fg) kölcsönzött ki! (együtt)
+    public function reserve_db ($db){
+    $user = Auth::user();
+    $lendings = DB::table('lendings')
+        ->selectRaw('count(copy_id) as number_of_copies, copy_id')
+        ->where('user_id', $user->id)
+        ->groupBy('copy_id')
+        ->having('number_of_copies', '>=', $db)
+        ->get();
+        return $lendings;
+    }
+
+    //hány előjegyzés van az adott könyvre- nem példányra
+    
 }

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             //0: admin, 1: felhasználó
-            $table->boolean('permission')->default(1);
+            $table->smallInteger('permission')->default(1);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
