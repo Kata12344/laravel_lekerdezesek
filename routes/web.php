@@ -2,10 +2,13 @@
 
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CopyController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\LendingController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReservationController;
 use App\Models\Lending;
+use App\Models\Reservation;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,13 +45,34 @@ Route::middleware( ['admin'])->group(function () {
     Route::get('/copy/new', [CopyController::class, 'newView']);
     Route::get('/copy/edit/{id}', [CopyController::class, 'editView']);
     Route::get('/copy/list', [CopyController::class, 'listView']); 
+
+    
+    Route::delete('/api/lendings/{user_id}/{copy_id}/{start}', [LendingController::class, 'destroy']);
+    Route::delete('api/lendings/delete_old_reservs', [ReservationController::class, 'deleteOldReservs']);
 });
+
+
+
 
 //könyvtáros 
 Route::middleware( ['librarian'])->group(function () {
     Route::apiResource('/users', UserController::class);
-});
 
+
+
+Route::get('/api/book_copies_count/{title}', [CopyController::class, 'bookCopyCount']);
+Route::get('/api/hardcovered_copy_count/{hardcovered}', [CopyController::class, 'hardcoveredCopyCount']);
+Route::get('/api/publication_copy_count/{publication}', [CopyController::class, 'publicationCopyCount']);
+Route::apiResource('/api/copies', CopyController::class);
+Route::get('/api/lendings', [LendingController::class, 'index']); 
+Route::get('/api/lendings/{user_id}/{copy_id}/{start}', [LendingController::class, 'show']);
+Route::put('/api/lendings/{user_id}/{copy_id}/{start}', [LendingController::class, 'update']);
+Route::patch('/api/lendings/{user_id}/{copy_id}/{start}', [LendingController::class, 'update']);
+Route::post('/api/lendings', [LendingController::class, 'store']);
+Route::get('/api/pub_copy_count/{publication}/{book_id}', [CopyController::class, 'pubCopyCount']);
+Route::get('/api/hatos_fel/{book_id}', [CopyController::class, 'hatosfel']);
+
+});
 
 //SIMPLE USER
 Route::middleware(['auth.basic'])->group(function () {
@@ -67,31 +91,27 @@ Route::middleware(['auth.basic'])->group(function () {
     Route::get('/api/authors_min/{number}', [BookController::class, 'authors_min']);
     Route::get('/api/authors_withB', [BookController::class, 'authors_withB']);
     Route::get('/api/reserve_db/{id}', [LendingController::class, 'reserve_db']);
+
+    Route::get('api/my_books', [LendingController::class, 'my_books']);
 });
 
 
-//csak a tesztelés miatt van "kint"
 Route::patch('/api/users/password/{id}', [UserController::class, 'updatePassword']);
-Route::apiResource('/api/copies', CopyController::class);
-Route::get('/api/lendings', [LendingController::class, 'index']); 
-Route::get('/api/lendings/{user_id}/{copy_id}/{start}', [LendingController::class, 'show']);
-Route::put('/api/lendings/{user_id}/{copy_id}/{start}', [LendingController::class, 'update']);
-Route::patch('/api/lendings/{user_id}/{copy_id}/{start}', [LendingController::class, 'update']);
-Route::post('/api/lendings', [LendingController::class, 'store']);
-Route::delete('/api/lendings/{user_id}/{copy_id}/{start}', [LendingController::class, 'destroy']);
 
 
-Route::get('/api/book_copies_count/{title}', [CopyController::class, 'bookCopyCount']);
-
-Route::get('/api/hardcovered_copy_count/{hardcovered}', [CopyController::class, 'hardcoveredCopyCount']);
-
-Route::get('/api/publication_copy_count/{publication}', [CopyController::class, 'publicationCopyCount']);
+//csak a tesztelés miatt van "kint"
 
 
 
-Route::get('/api/pub_copy_count/{publication}/{book_id}', [CopyController::class, 'pubCopyCount']);
 
-Route::get('/api/hatos_fel/{book_id}', [CopyController::class, 'hatosfel']);
+
+
+//email küldés
+Route::get('send-mail', [MailController::class, 'index']);
+
+//file feltöltés
+Route::get('file_upload', [FileController::class, 'index']);
+Route::post('file_upload', [FileController::class, 'store'])->name('file.store');
 
 
 

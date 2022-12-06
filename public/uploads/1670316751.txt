@@ -1,0 +1,8 @@
+Polimorfizmus (amikor ős hivatkozik gyerekre)
+
+106. sor : Ős: List
+		gyerek: arraylist
+
+
+kasztolunk egy objektumot a statikus ős típusáról a dinamikus
+63. sor: int i-t kasztoljuk stringre, JButton a statikus ős-> e(actionevent) a dinamikus típus

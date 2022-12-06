@@ -59,6 +59,13 @@ public function older ($day){
         return $reservations;
 }
 
+public function deleteOldReservs(){
+    $reservations= DB::table('reservartions')
+        ->where('status', 1)
+        ->delete();
+    return $reservations;
+}
+
 
 
 

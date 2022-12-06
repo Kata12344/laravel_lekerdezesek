@@ -82,4 +82,27 @@ class LendingController extends Controller
 
     //hány előjegyzés van az adott könyvre- nem példányra
     
+    //jelenítsd meg azon könyveket, amik jelenleg nálam vannak, szerző nevével, címmel
+    public function my_books (){
+        $user = Auth::user();
+        $books = DB::table('lendings as l')
+        ->join('copies as c', 'l.copy_id', '=', 'c.copy_id')
+        ->join('books as b', 'c.book_id', '=', 'b.book_id')
+        ->select('b.author', 'b.title')
+        ->where('l.user_id', '=', $user->id)
+        ->where('l.end is null')
+        ->get();
+        return $books;
+    }
+
+
+    //azon felhasználók törlése, akiknek nincs kölcsönzése
+    public function delete_users(){
+        $users = DB::table('users as u')
+        ->select('id')
+        ->join('lendings as l', 'l.user_id', 'u.id')
+        ->whereNotInRaw('select user_id from lendings')
+        ->delete();
+        return $users;
+    }
 }

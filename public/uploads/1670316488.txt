@@ -1,0 +1,58 @@
+select * from CSERE
+go
+
+-- adott cikkbõl évente hány csere történt
+create function hanyCsereEvente
+(
+@cikksz char(10)
+)
+returns table
+AS
+return
+(select year(dátum1) as év, count(cikkszám) as csere from csere
+where cikkszám = @cikksz
+group by year(dátum1)
+)
+go
+
+select * from dbo.hanyCsereEvente('c11')
+go
+
+-- adott napon hány mosogépet adtak el?
+create function mosogepNap
+(
+@nap date
+)
+returns int
+begin
+
+declare @valasz int
+set @valasz =
+(
+select count(e.cikkszám) as eladva  from ELADÁS e, cikk c
+where e.cikkszám = c.cikkszám and megnev like '%mosógép%' and kelt = @nap
+)
+return @valasz
+end
+
+go
+
+select dbo.mosogepNap('2014-01-23')
+
+-- két adott dátum között mekkora lett az árbevétel
+go
+create function arbevetel
+(
+@datumtol date,
+@datumig date
+)
+returns int
+begin
+declare @vissza money
+set @vissza = (select sum(ár) from ELADÁS
+where kelt between @datumtol and @datumig)
+return @vissza
+end
+go
+
+select dbo.arbevetel('2014-12-22','2015-01-03')
