@@ -134,4 +134,25 @@ class CopyController extends Controller
 
         return $copies;
     }
+
+    public function adminTorolSelejt(){
+        $copies = DB::table('copies as c')
+        ->where('c.status', '=', 1)
+        ->delete();
+        return $copies;
+    }
+
+    public function adminTorolHard(){
+        $copies = DB::table('copies as c')
+        ->where('c.hardcovered', '=', 1)
+        ->delete();
+        return $copies;
+    }
+
+    public function elott(){
+        $copies = DB::table('copies as c')
+        ->where('c.publication', '<', 1999)
+        ->get();
+        return $copies;
+    }
 }

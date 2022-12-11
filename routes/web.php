@@ -46,9 +46,11 @@ Route::middleware( ['admin'])->group(function () {
     Route::get('/copy/edit/{id}', [CopyController::class, 'editView']);
     Route::get('/copy/list', [CopyController::class, 'listView']); 
 
-    
     Route::delete('/api/lendings/{user_id}/{copy_id}/{start}', [LendingController::class, 'destroy']);
     Route::delete('api/lendings/delete_old_reservs', [ReservationController::class, 'deleteOldReservs']);
+
+    Route::delete('api/copies/adminTorolSelejt', [CopyController::class, 'adminTorolSelejt']);
+    Route::delete('api/copies/adminTorolHard', [CopyController::class, 'adminTorolHard']);
 });
 
 
@@ -71,6 +73,9 @@ Route::patch('/api/lendings/{user_id}/{copy_id}/{start}', [LendingController::cl
 Route::post('/api/lendings', [LendingController::class, 'store']);
 Route::get('/api/pub_copy_count/{publication}/{book_id}', [CopyController::class, 'pubCopyCount']);
 Route::get('/api/hatos_fel/{book_id}', [CopyController::class, 'hatosfel']);
+
+Route::get('/api/elott', [CopyController::class, 'elott']);
+Route::get('/api/osszElo', [ReservationController::class, 'osszElo']);
 
 });
 

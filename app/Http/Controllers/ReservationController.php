@@ -60,13 +60,18 @@ public function older ($day){
 }
 
 public function deleteOldReservs(){
-    $reservations= DB::table('reservartions')
+    $reservations= DB::table('reservations')
         ->where('status', 1)
         ->delete();
     return $reservations;
 }
 
-
+public function osszElo($user){
+    $reservations = DB::table('reservations')
+        ->where('user_id', '=', $user)
+        ->get();
+    return $reservations;
+}
 
 
 
